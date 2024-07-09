@@ -1,3 +1,15 @@
+@font-face {
+  font-family: 'ChosunGs';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunGs.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'SUIT-Regular';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
 body {
   background-color: #ccc;
 }
@@ -34,7 +46,7 @@ img {
   max-height: 250px;
 }
 .news {
-  border-bottom: 2px solid #888;
+  border-bottom: 1px solid #aaa;
   padding: 2em 0;
 }
 .col-lg-4 {
@@ -78,32 +90,47 @@ input[type = text] {
   border: none;
   background: transparent;
   padding: 0 10px;
-  border: 1px solid #000;
+  border: 1px solid #999;
 }
 .input-area button {
   border: none;
   background-color: #444;
   color: #fff;
 }
+.input-area button:hover {
+  background-color: #333;
+}
 input[type = text]:focus {
   outline: none
 }
 /* ######### section - news ########## */
 h2 {
-  font-family: serif;
+  font-family: 'ChosunGs';
+  font-size: 1.6em;
+  font-weight: 600;
+}
+p {
+  font-family: 'SUIT-Regular';
+  font-weight: 400;
 }
 @media (max-width: 768px) {
+  h2 {
+    font-size: 1.3em;
+  }
+  p {
+    margin-top: 1.5em;
+  }
   menu {
     display: block;
   }
   .menus {
-    position: absolute;
+    position: fixed;
     margin: 0;
     top: 0;
     left: -100%;
     height: 100%;
     background-color: #333;
-    width: 70vw;
+    width: 80vw;
     padding: 20px;
     border: none;
     display: flex;
@@ -115,7 +142,6 @@ h2 {
   }
   .menus button {
     display: block;
-    width: 70%;
     color: #777;
     transition: 0.35s;
   }
