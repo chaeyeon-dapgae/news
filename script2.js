@@ -1,15 +1,15 @@
-const API_KEY = "062a34e0cdaa457d9e176b95056f3ded";
+const API_KEY = "";
 let newsList = [];
 const getLatestNews = async () => {
   const url = new URL(
-    `https://newsapi.org/v2/top-headlines?country=kr&apiKey=${API_KEY}`
+    `https://newsapi.org/v2/top-headlines?country=us&apiKey=${API_KEY}`
   );
   //URL 호출 하게 해주는 fetch함수
   const response = await fetch(url);
   const data = await response.json();
   //json은 파일 형식._텍스트이지만 객체처럼 생긴 타입 ex)png, jpeg
   newsList = data.articles;
-  console.log("rrr", newsList);
+  console.log(newsList)
   render();
 };
 
@@ -52,15 +52,15 @@ const render = () => {
     // map은 반드시 return
     return `<div class="row news"> 
       <div class="col-lg-4">
-        <img class="news-img-size" src="${news.urlToImage}"/>
+        <img class="news-img-size" src="${news.urlToImage}" onError="this.src='https://t3.ftcdn.net/jpg/05/52/37/18/360_F_552371867_LkVmqMEChRhMMHDQ2drOS8cwhAWehgVc.jpg'"/>
       </div>
       <div class="col-lg-8">
         <h2>${news.title}</h2>
         <p>
-          ${news.description}
+          ${news.description == null || news.description == '' ? '내용없음' : news.description.length > 200 ? news.description.substr(0, 200) + '...':news.description}
         </p>
         <div>
-          ${news.source.name} * ${news.publishedAt}
+          ${news.source.name == null || news.source.name == '' ? 'no source' : news.source.name} * ${news.publishedAt} * ${news.publishedAt}
         </div>
       </div>
     </div>`;

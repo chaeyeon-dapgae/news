@@ -110,6 +110,7 @@ h2 {
   font-weight: 600;
 }
 p {
+  margin-top: 1.5em;
   font-family: 'SUIT-Regular';
   font-weight: 400;
 }
@@ -117,9 +118,7 @@ p {
   h2 {
     font-size: 1.3em;
   }
-  p {
-    margin-top: 1.5em;
-  }
+
   menu {
     display: block;
   }
