@@ -22,15 +22,11 @@ let menuSlideOff = () => menuGroup.style.left = '-100%';
 
 hamburgerButton.addEventListener("click", menuSlideOn);
 closeButton.addEventListener("click", menuSlideOff);
-const menus = document.querySelectorAll('.menus button');
-menus.forEach(menu => menu.addEventListener("click", (event) => {getNewsByCategory(event)}))
 
 // ########## search - input ##########
 let searchButton = document.querySelector('.xi-search');
 let searchClicked = false;
 let searchArea = document.querySelector('.input-area');
-let goButton = document.getElementById('go-button');
-let searchTxt = document.getElementById('search-text');
 
 let searching = () => {
   if(searchClicked === false) {
@@ -47,13 +43,19 @@ searchButton.addEventListener("click", searching)
 
 // #################### render - keyword & button Category ####################
 
+const menus = document.querySelectorAll('.menus button');
+let inputTxt = document.querySelector('#search-text');
+let goButton = document.querySelector('#go-button')
+menus.forEach(menu => menu.addEventListener("click", (event) => {getNewsByCategory(event)}))
+goButton.addEventListener("click", ()=>{getNewsByKeyword()})
+
 // 1. 메뉴 버튼'들'에 클릭이벤트 줘야함
 // 2. 카테고리별 뉴스 가져오기
 // 3. 그 뉴스를 보여주기 render
 const getNewsByCategory = async(event) => {
   const category = event.target.textContent.toLowerCase();
   console.log(category)
-  const url = new URL(`https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=${API_KEY}`)
+  const url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines?category=${category}`)
   const response = await fetch(url)
   const data = await response.json();
   // console.log(data)
@@ -63,7 +65,7 @@ const getNewsByCategory = async(event) => {
 
 const getNewsByKeyword = async() => {
   const keyword = inputTxt.value;
-  const url = new URL(`https://newsapi.org/v2/top-headlines?country=kr&q=${keyword}&apiKey=${API_KEY}`)
+  const url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines?q=${keyword}`)
   const response = await fetch(url)
   const data = await response.json();
   // console.log(keyword)
@@ -73,24 +75,12 @@ const getNewsByKeyword = async() => {
   inputTxt.value =""
 }
 
-
-
-
-goButton.addEventListener("click", function (){
-  searchTxt.value = ""
-  searchClicked = false;
-  searchArea.style.width = '0';
-  searchArea.style.opacity = '0';
-})
-
-
-
-
 // ########## api에서 받은 데이터를 이용하여 UI 변경 ##########
 const render = () => {
-  const newsHTML = newsList.map((news)=>{
-    // map은 반드시 return
-    return `<div class="row news"> 
+  const newsHTML = newsList.map((news) =>
+    {
+      // map은 반드시 return
+      return `<div class="row news"> 
       <div class="col-lg-4">
         <img class="news-img-size" src="${news.urlToImage || 'https://cdn.iconscout.com/icon/free/png-256/free-no-image-1771002-1505134.png'}" onError="this.src='https://cdn.iconscout.com/icon/free/png-256/free-no-image-1771002-1505134.png'"/>
       </div>
@@ -106,5 +96,4 @@ const render = () => {
     </div>`;
   }).join('');
   document.getElementById("news-board").innerHTML = newsHTML;
-  }
-
+};
