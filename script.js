@@ -21,7 +21,7 @@ const getNews = async() => {
 
 const getLatestNews = async() => {
   url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines`);
-  getNews();
+  await getNews();
 }
 
 getLatestNews ()
@@ -81,13 +81,13 @@ inputTxt.addEventListener("keyup", (enterKeyCode) => {
 const getNewsByCategory = async(event) => {
   const category = event.target.textContent.toLowerCase();
   url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines?category=${category}`)
-  getNews();
+  await getNews();
 }
 
 const getNewsByKeyword = async() => {
   const keyword = inputTxt.value;
   url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines?q=${keyword}`)
-  getNews();
+  await getNews();
   inputTxt.value =""
 }
 
