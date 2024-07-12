@@ -20,6 +20,7 @@ img {
   margin-top: 1em;
   display: flex;
   justify-content: center;
+  cursor: pointer;
 }
 .head-line svg {
   width: 430px; 

@@ -1,13 +1,27 @@
+let url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines`);
 let newsList = [];
+
+const getNews = async() => {
+  try{
+    const response = await fetch(url);
+    const data = await response.json()
+    if(response.status === 200) {
+      if(data.articles.length < 1) {
+        throw new Error("No result for this search")
+      }
+      newsList = data.articles;
+      render()
+    } else {
+      throw new Error(data.message)
+    }
+  } catch (error) {
+    errorRender(error.message);
+  }
+}
+
 const getLatestNews = async() => {
-  const url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines`);
-  //URL 호출 하게 해주는 fetch함수
-  const response = await fetch(url);
-  const data = await response.json()
-  //json은 파일 형식._텍스트이지만 객체처럼 생긴 타입 ex)png, jpeg
-  newsList = data.articles
-  // console.log(newsList)
-  render()
+  url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines`);
+  getNews();
 }
 
 getLatestNews ()
@@ -39,53 +53,54 @@ let searching = () => {
     searchArea.style.opacity = '0';
   }
 }
+
 searchButton.addEventListener("click", searching)
 
 // #################### render - keyword & button Category ####################
-
 const menus = document.querySelectorAll('.menus button');
 let inputTxt = document.querySelector('#search-text');
 let goButton = document.querySelector('#go-button')
+
+menus.forEach((menu)=>menu.addEventListener("click", menuSlideOff));
+
 menus.forEach(menu => menu.addEventListener("click", (event) => {getNewsByCategory(event)}))
+
 goButton.addEventListener("click", ()=>{getNewsByKeyword()})
 
-// 1. 메뉴 버튼'들'에 클릭이벤트 줘야함
-// 2. 카테고리별 뉴스 가져오기
-// 3. 그 뉴스를 보여주기 render
+inputTxt.addEventListener("keyup", (enterKeyCode) => {
+  let enterKey = enterKeyCode.code;
+  if (enterKey == "Enter" || enterKey == "NumpadEnter") {
+    if(inputTxt.value == "") {
+      return;
+    } else if(inputTxt.value) {
+      getNewsByKeyword()
+    }
+  }
+})
+
 const getNewsByCategory = async(event) => {
   const category = event.target.textContent.toLowerCase();
-  console.log(category)
-  const url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines?category=${category}`)
-  const response = await fetch(url)
-  const data = await response.json();
-  // console.log(data)
-  newsList = data.articles
-  render()
+  url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines?category=${category}`)
+  getNews();
 }
 
 const getNewsByKeyword = async() => {
   const keyword = inputTxt.value;
-  const url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines?q=${keyword}`)
-  const response = await fetch(url)
-  const data = await response.json();
-  // console.log(keyword)
-  // console.log(data)
-  newsList = data.articles
-  render()
+  url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines?q=${keyword}`)
+  getNews();
   inputTxt.value =""
 }
 
 // ########## api에서 받은 데이터를 이용하여 UI 변경 ##########
 const render = () => {
   const newsHTML = newsList.map((news) =>
-    {
-      // map은 반드시 return
+    { 
       return `<div class="row news"> 
       <div class="col-lg-4">
         <img class="news-img-size" src="${news.urlToImage || 'https://cdn.iconscout.com/icon/free/png-256/free-no-image-1771002-1505134.png'}" onError="this.src='https://cdn.iconscout.com/icon/free/png-256/free-no-image-1771002-1505134.png'"/>
       </div>
       <div class="col-lg-8">
-        <h2><a href="${news.url}">${news.title}</a></h2>
+        <h2><a href="${news.url}" target="_blank">${news.title}</a></h2>
         <p>
           ${news.description == null || news.description == '' ? '내용없음' : news.description.length > 200 ? news.description.substr(0, 200) + '...':news.description}
         </p>
@@ -97,3 +112,11 @@ const render = () => {
   }).join('');
   document.getElementById("news-board").innerHTML = newsHTML;
 };
+
+let errorRender = (errorMessage) => {
+  const errorHTML = `<div class="alert alert-danger" role="alert">
+  ${errorMessage}
+  </div>`;
+
+  document.getElementById("news-board").innerHTML = errorHTML;
+}
