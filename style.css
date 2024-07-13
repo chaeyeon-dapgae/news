@@ -123,6 +123,27 @@ p {
   font-family: 'SUIT-Regular';
   font-weight: 400;
 }
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+.page-item a {
+  margin: 5px;
+  background-color: transparent;
+  border: none;
+  color: #000;
+  border-radius: 50%;
+}
+.page-item.active a,
+.page-item.active:hover a {
+  background-color: #aaa;
+  color: #fff;
+}
+.page-item:hover a {
+  background-color: #ddd;
+  color: #000;
+}
 @media (max-width: 768px) {
   h2 {
     font-size: 1.3em;
