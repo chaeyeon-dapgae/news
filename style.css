@@ -133,7 +133,6 @@ p {
   background-color: transparent;
   border: none;
   color: #000;
-  border-radius: 50%;
 }
 .page-item.active a,
 .page-item.active:hover a {
@@ -143,6 +142,19 @@ p {
 .page-item:hover a {
   background-color: #ddd;
   color: #000;
+}
+/* gotoUP */
+.gotoup {
+  position: fixed;
+  bottom: 70px; 
+  right: 20px;
+  background-color: #444;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  color: #fff;
+  text-align: center;
+  line-height: 30px;
 }
 @media (max-width: 768px) {
   h2 {
