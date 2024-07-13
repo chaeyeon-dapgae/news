@@ -61,24 +61,32 @@ inputTxt.addEventListener("keyup", (enterKeyCode) => {
 const getNews = async() => {
   try{
     url.searchParams.set("page", page)
-    url.searchParams.set("pageSize", pageSize)
+    // url.searchParams.set("pageSize", pageSize)
 
     const response = await fetch(url);
     const data = await response.json()
     if(response.status === 200) {
       if(data.articles.length < 1) {
+        page = 0;
+        totalPages = 0;
         paginationRender()
         throw new Error("No result for this search")
       }
       newsList = data.articles;
       totalResults = data.totalResults
-      paginationRender()
       render()
+      paginationRender()
     } else {
+      page = 0;
+      totalPages = 0;
+      paginationRender()
       throw new Error(data.message)
     }
   } catch (error) {
     errorRender(error.message);
+    page = 0;
+    totalPages = 0;
+    paginationRender()
   }
 }
 
@@ -87,16 +95,17 @@ const getLatestNews = async() => {
   await getNews();
 }
 
-getLatestNews ()
 
 const getNewsByCategory = async(event) => {
   const category = event.target.textContent.toLowerCase();
+  page = 1;
   url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines?category=${category}`)
   await getNews();
 }
 
 const getNewsByKeyword = async() => {
   const keyword = inputTxt.value;
+  page = 1;
   url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines?q=${keyword}`)
   await getNews();
   inputTxt.value =""
@@ -142,18 +151,24 @@ const paginationRender = () => {
   // console.log("totalPages: ",totalPages) // 20출력
   // console.log(totalResults) // 196 출력
   const pageGroup = Math.ceil(page / groupSize)
-  console.log(pageGroup)
   let lastPage = pageGroup * groupSize;
   if(lastPage > totalPages) {
     lastPage = totalPages;
   }
   const firstPage = lastPage - (groupSize - 1) <= 0? 1 : lastPage - (groupSize - 1);
 
-  let pagiNationHTML = `<li class="page-item" onclick="moveToPage(${page-1})"><a class="page-link">Previous</a></li>`;
+  let pagiNationHTML = `<li class="page-item" onclick="moveToPage(${page-1})"><a class="page-link"><i class="xi-angle-left-min"></i></a></li>`;
 
   for(let i = firstPage; i <= lastPage; i++) {
     pagiNationHTML += `<li class="page-item ${i===page?'active':''}" onclick="moveToPage(${i})"><a class="page-link">${i}</a></li>`;
   }
-  pagiNationHTML += `<li class="page-item" onclick="moveToPage(${page+1})"><a class="page-link">Next</a></li>`
+  pagiNationHTML += `<li class="page-item" onclick="moveToPage(${page+1})"><a class="page-link"><i class="xi-angle-right-min"></i></a></a></li>`
   document.querySelector(".pagination").innerHTML = pagiNationHTML;
+}
+
+getLatestNews ()
+
+const headLineRender = () => {
+  page=1;
+  getLatestNews();
 }

@@ -165,12 +165,12 @@ const paginationRender = () => {
   }
   // firstPage
   const firstPage = lastPage - (groupSize - 1) <= 0? 1 : lastPage - (groupSize - 1);
-  let pagiNationHTML = `<li class="page-item" onclick="moveToPage(${page-1})"><a class="page-link">Previous</a></li>`;
+  let pagiNationHTML = `<li class="page-item" onclick="moveToPage(${page-1})"><a class="page-link"><i class="xi-angle-left-min"></i></a></li>`;
 
   for(let i = firstPage; i <= lastPage; i++) {
     pagiNationHTML += `<li class="page-item ${i===page?'active':''}"} onclick="moveToPage(${i})"><a class="page-link">${i}</a></li>`
   }
-  pagiNationHTML += `<li class="page-item" onclick="moveToPage(${page+1})"><a class="page-link">Next</a></li>`
+  pagiNationHTML += `<li class="page-item" onclick="moveToPage(${page+1})"><a class="page-link"><i class="xi-angle-right-min"></i></a></li>`
   document.querySelector(".pagination").innerHTML = pagiNationHTML;
 //   <nav aria-label="Page navigation example">
 //   <ul class="pagination">
@@ -184,3 +184,8 @@ const paginationRender = () => {
 };
 
 getLatestNews();
+
+const headLineRender = () => {
+  page=1;
+  getLatestNews();
+}
