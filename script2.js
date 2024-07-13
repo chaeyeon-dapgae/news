@@ -80,6 +80,7 @@ const getNews = async() => {
 }
 
 const getLatestNews = async () => {
+  page = 1;
   url = new URL(`https://newsapi.org/v2/top-headlines?country=kr&apiKey=${API_KEY}`);
   await getNews();
 };
@@ -99,6 +100,7 @@ const getNewsByKeyword = async() => {
 
 const moveToPage = (pageNum) => {
   page = pageNum;
+  window.scrollTo({top: 0, behavior: "smooth"});
   getNews();
 }
 
@@ -165,12 +167,39 @@ const paginationRender = () => {
   }
   // firstPage
   const firstPage = lastPage - (groupSize - 1) <= 0? 1 : lastPage - (groupSize - 1);
-  let pagiNationHTML = `<li class="page-item" onclick="moveToPage(${page-1})"><a class="page-link"><i class="xi-angle-left-min"></i></a></li>`;
+  let pagiNationHTML = ``;
 
+  if(1 < page){
+    pagiNationHTML +=
+      `<li class="page-item" onclick="moveToPage(${firstPage})">
+        <a class="page-link">
+          <i class="xi-angle-left-min"></i>
+          <i class="xi-angle-left-min"></i>
+        </a>
+      </li>
+      <li class="page-item" onclick="moveToPage(${page-1})">
+        <a class="page-link">
+          <i class="xi-angle-left-min"></i>
+        </a>
+      </li>`
+  }
   for(let i = firstPage; i <= lastPage; i++) {
     pagiNationHTML += `<li class="page-item ${i===page?'active':''}"} onclick="moveToPage(${i})"><a class="page-link">${i}</a></li>`
   }
-  pagiNationHTML += `<li class="page-item" onclick="moveToPage(${page+1})"><a class="page-link"><i class="xi-angle-right-min"></i></a></li>`
+  if (page < lastPage) {
+    pagiNationHTML +=
+      `<li class="page-item" onclick="moveToPage(${page-1})">
+        <a class="page-link">
+          <i class="xi-angle-right-min"></i>
+          </a>
+          </li>
+          <li class="page-item" onclick="moveToPage(${lastPage})">
+          <a class="page-link">
+          <i class="xi-angle-right-min"></i>
+          <i class="xi-angle-right-min"></i>
+        </a>
+      </li>`
+  }
   document.querySelector(".pagination").innerHTML = pagiNationHTML;
 //   <nav aria-label="Page navigation example">
 //   <ul class="pagination">
@@ -184,8 +213,3 @@ const paginationRender = () => {
 };
 
 getLatestNews();
-
-const headLineRender = () => {
-  page=1;
-  getLatestNews();
-}

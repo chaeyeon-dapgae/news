@@ -91,6 +91,7 @@ const getNews = async() => {
 }
 
 const getLatestNews = async() => {
+  page = 1;
   url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines`);
   await getNews();
 }
@@ -157,18 +158,39 @@ const paginationRender = () => {
   }
   const firstPage = lastPage - (groupSize - 1) <= 0? 1 : lastPage - (groupSize - 1);
 
-  let pagiNationHTML = `<li class="page-item" onclick="moveToPage(${page-1})"><a class="page-link"><i class="xi-angle-left-min"></i></a></li>`;
-
-  for(let i = firstPage; i <= lastPage; i++) {
-    pagiNationHTML += `<li class="page-item ${i===page?'active':''}" onclick="moveToPage(${i})"><a class="page-link">${i}</a></li>`;
+  let pagiNationHTML = ``;
+  if(1 < page){
+    pagiNationHTML +=
+      `<li class="page-item" onclick="moveToPage(${firstPage})">
+        <a class="page-link">
+          <i class="xi-angle-left-min"></i>
+          <i class="xi-angle-left-min"></i>
+        </a>
+      </li>
+      <li class="page-item" onclick="moveToPage(${page-1})">
+        <a class="page-link">
+          <i class="xi-angle-left-min"></i>
+        </a>
+      </li>`
   }
-  pagiNationHTML += `<li class="page-item" onclick="moveToPage(${page+1})"><a class="page-link"><i class="xi-angle-right-min"></i></a></a></li>`
+  for(let i = firstPage; i <= lastPage; i++) {
+    pagiNationHTML += `<li class="page-item ${i===page?'active':''}"} onclick="moveToPage(${i})"><a class="page-link">${i}</a></li>`
+  }
+  if (page < lastPage) {
+    pagiNationHTML +=
+      `<li class="page-item" onclick="moveToPage(${page-1})">
+        <a class="page-link">
+          <i class="xi-angle-right-min"></i>
+          </a>
+          </li>
+          <li class="page-item" onclick="moveToPage(${lastPage})">
+          <a class="page-link">
+          <i class="xi-angle-right-min"></i>
+          <i class="xi-angle-right-min"></i>
+        </a>
+      </li>`
+  }
   document.querySelector(".pagination").innerHTML = pagiNationHTML;
 }
 
 getLatestNews ()
-
-const headLineRender = () => {
-  page=1;
-  getLatestNews();
-}
