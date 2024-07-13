@@ -158,9 +158,11 @@ const paginationRender = () => {
     lastPage = totalPages;
   }
   const firstPage = lastPage - (groupSize - 1) <= 0? 1 : lastPage - (groupSize - 1);
-
   let pagiNationHTML = ``;
-  if (1 < page) {
+  
+  if(lastPage == totalPages) {
+    pagiNationHTML = ``;
+  } else if (1 < page) {
     pagiNationHTML +=
       `<li class="page-item" onclick="moveToPage(1)">
         <a class="page-link">
@@ -173,12 +175,13 @@ const paginationRender = () => {
           <i class="xi-angle-left-min"></i>
         </a>
       </li>`
-
   }
   for(let i = firstPage; i <= lastPage; i++) {
     pagiNationHTML += `<li class="page-item ${i===page?'active':''}"} onclick="moveToPage(${i})"><a class="page-link">${i}</a></li>`
   }
-  if (page < totalPages) {
+  if(lastPage == totalPages) {
+    pagiNationHTML += ``;
+  } else if (page < totalPages) {
     pagiNationHTML +=
       `<li class="page-item" onclick="moveToPage(${page+1})">
         <a class="page-link">
