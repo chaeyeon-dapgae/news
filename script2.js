@@ -1,40 +1,11 @@
 const API_KEY = "062a34e0cdaa457d9e176b95056f3ded";
-let url = new URL('https://newsapi.org/v2/top-headlines?country=kr&apiKey=${API_KEY}')
+let url = new URL(`https://newsapi.org/v2/top-headlines?country=kr&apiKey=${API_KEY}`)
 
+let newsList = [];
 let totalResults = 0;
 let page = 1;
 const pageSize = 10;
 const groupSize = 5;
-
-
-const getNews = async() => {
-  try {
-    const response = await fetch(url)
-    const data = await response.json();
-    console.log(data)
-    if(response.status === 200 ) {
-      if(data.articles.length < 1) {
-        throw new Error("No result for this search")
-      }
-      newsList = data.articles;
-      totalResults = data.totalResults
-      render()
-    } else {
-      throw new Error(data.message)
-    }
-  } catch (error) {
-      // console.log("error", error.message);
-      errorRender(error.message)
-  }
-}
-
-let newsList = [];
-const getLatestNews = async () => {
-  url = new URL(`https://newsapi.org/v2/top-headlines?country=kr&apiKey=${API_KEY}`);
-  getNews();
-};
-
-getLatestNews();
 
 // #################### menu ####################
 let hamburgerButton = document.querySelector(".xi-bars");
@@ -84,20 +55,51 @@ inputTxt.addEventListener("keyup", (enterKeyCode) => {
   }
 })
 
-// 1. 메뉴 버튼'들'에 클릭이벤트 줘야함
-// 2. 카테고리별 뉴스 가져오기
-// 3. 그 뉴스를 보여주기 render
+const getNews = async() => {
+  try {
+    url.searchParams.set("page", page);
+    url.searchParams.set("pageSize", pageSize);
+    const response = await fetch(url)
+    const data = await response.json();
+    if(response.status === 200 ) {
+      if(data.articles.length < 1) {
+        paginationRender ();
+        throw new Error("No result for this search")
+      }
+      newsList = data.articles;
+      totalResults = data.totalResults
+      render()
+      paginationRender ();
+    } else {
+      throw new Error(data.message)
+    }
+  } catch (error) {
+    // console.log("error", error.message);
+    errorRender(error.message)
+  }
+}
+
+const getLatestNews = async () => {
+  url = new URL(`https://newsapi.org/v2/top-headlines?country=kr&apiKey=${API_KEY}`);
+  await getNews();
+};
+
 const getNewsByCategory = async(event) => {
   const category = event.target.textContent.toLowerCase();
   url = new URL(`https://newsapi.org/v2/top-headlines?country=kr&category=${category}&apiKey=${API_KEY}`)
-  getNews()
+  await getNews();
 }
 
 const getNewsByKeyword = async() => {
   const keyword = inputTxt.value;
-  url = new URL(`https://newsapi.org/v2/top-headlines?country=kr&q=${keyword}&apiKey=${API_KEY}`)
-  getNews()
+  url = new URL(`https://newsapi.org/v2/top-headlines?country=kr&category=${keyword}&apiKey=${API_KEY}`)
+  await getNews();
   inputTxt.value =""
+}
+
+const moveToPage = (pageNum) => {
+  page = pageNum;
+  getNews();
 }
 
 // #################### api에서 받은 데이터를 이용하여 UI 변경 ####################
@@ -148,23 +150,27 @@ try {
 
 const paginationRender = () => {
   // totalResult
-  // totalPage
   // page
   // pageSize
+  // totalPage
+  const totalPages = Math.ceil(totalResults / pageSize);
   // GroupSize
-  // pageGroup (몇번째 그룹에 속했는지)
+  // pageGroup
   const pageGroup = Math.ceil(page / groupSize)
   // lastPage
-  const lastPage = pageGroup * groupSize;
+  let lastPage = pageGroup * groupSize;
+  // 마지막 페이지그룹이 그룹사이즈보다 작다? -> lastpage = totalPages
+  if(lastPage > totalPages) {
+    lastPage = totalPages;
+  }
   // firstPage
-  const firstPage = lastPage - (groupSize - 1);
-
-  let pagiNationHTML = ``;
+  const firstPage = lastPage - (groupSize - 1) <= 0? 1 : lastPage - (groupSize - 1);
+  let pagiNationHTML = `<li class="page-item" onclick="moveToPage(${page-1})"><a class="page-link">Previous</a></li>`;
 
   for(let i = firstPage; i <= lastPage; i++) {
-    pagiNationHTML += `<li class="page-item"><a class="page-link" href="#">${i}</a></li>`
+    pagiNationHTML += `<li class="page-item ${i===page?'active':''}"} onclick="moveToPage(${i})"><a class="page-link">${i}</a></li>`
   }
-
+  pagiNationHTML += `<li class="page-item" onclick="moveToPage(${page+1})"><a class="page-link">Next</a></li>`
   document.querySelector(".pagination").innerHTML = pagiNationHTML;
 //   <nav aria-label="Page navigation example">
 //   <ul class="pagination">
@@ -176,4 +182,5 @@ const paginationRender = () => {
 //   </ul>
 // </nav>
 };
-paginationRender ();
+
+getLatestNews();

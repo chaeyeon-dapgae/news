@@ -1,30 +1,10 @@
 let url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines`);
 let newsList = [];
 
-const getNews = async() => {
-  try{
-    const response = await fetch(url);
-    const data = await response.json()
-    if(response.status === 200) {
-      if(data.articles.length < 1) {
-        throw new Error("No result for this search")
-      }
-      newsList = data.articles;
-      render()
-    } else {
-      throw new Error(data.message)
-    }
-  } catch (error) {
-    errorRender(error.message);
-  }
-}
-
-const getLatestNews = async() => {
-  url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines`);
-  await getNews();
-}
-
-getLatestNews ()
+let totalResults = 0;
+let page = 1;
+const pageSize = 10;
+const groupSize = 5;
 
 // #################### menu ####################
 let hamburgerButton = document.querySelector('.xi-bars');
@@ -78,6 +58,37 @@ inputTxt.addEventListener("keyup", (enterKeyCode) => {
   }
 })
 
+const getNews = async() => {
+  try{
+    url.searchParams.set("page", page)
+    url.searchParams.set("pageSize", pageSize)
+
+    const response = await fetch(url);
+    const data = await response.json()
+    if(response.status === 200) {
+      if(data.articles.length < 1) {
+        paginationRender()
+        throw new Error("No result for this search")
+      }
+      newsList = data.articles;
+      totalResults = data.totalResults
+      paginationRender()
+      render()
+    } else {
+      throw new Error(data.message)
+    }
+  } catch (error) {
+    errorRender(error.message);
+  }
+}
+
+const getLatestNews = async() => {
+  url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines`);
+  await getNews();
+}
+
+getLatestNews ()
+
 const getNewsByCategory = async(event) => {
   const category = event.target.textContent.toLowerCase();
   url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines?category=${category}`)
@@ -89,6 +100,11 @@ const getNewsByKeyword = async() => {
   url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines?q=${keyword}`)
   await getNews();
   inputTxt.value =""
+}
+
+const moveToPage = (pageNum) => {
+  page = pageNum;
+  getNews()
 }
 
 // ########## api에서 받은 데이터를 이용하여 UI 변경 ##########
@@ -119,4 +135,25 @@ let errorRender = (errorMessage) => {
   </div>`;
 
   document.getElementById("news-board").innerHTML = errorHTML;
+}
+
+const paginationRender = () => {
+  const totalPages = Math.ceil(totalResults / pageSize);
+  // console.log("totalPages: ",totalPages) // 20출력
+  // console.log(totalResults) // 196 출력
+  const pageGroup = Math.ceil(page / groupSize)
+  console.log(pageGroup)
+  let lastPage = pageGroup * groupSize;
+  if(lastPage > totalPages) {
+    lastPage = totalPages;
+  }
+  const firstPage = lastPage - (groupSize - 1) <= 0? 1 : lastPage - (groupSize - 1);
+
+  let pagiNationHTML = `<li class="page-item" onclick="moveToPage(${page-1})"><a class="page-link">Previous</a></li>`;
+
+  for(let i = firstPage; i <= lastPage; i++) {
+    pagiNationHTML += `<li class="page-item ${i===page?'active':''}" onclick="moveToPage(${i})"><a class="page-link">${i}</a></li>`;
+  }
+  pagiNationHTML += `<li class="page-item" onclick="moveToPage(${page+1})"><a class="page-link">Next</a></li>`
+  document.querySelector(".pagination").innerHTML = pagiNationHTML;
 }
