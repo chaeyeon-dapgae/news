@@ -32,6 +32,7 @@ img {
   flex-wrap: wrap;
   border-top: 1px solid #444;
   border-bottom: 4px double #444;
+  font-family: 'ChosunGs';
 }
 .menus button {
   border: none;
@@ -133,6 +134,8 @@ p {
   background-color: transparent;
   border: none;
   color: #000;
+  font-family: 'SUIT-Regular';
+
 }
 .page-item.active a,
 .page-item.active:hover a {
