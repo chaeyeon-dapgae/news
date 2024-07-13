@@ -153,15 +153,16 @@ const paginationRender = () => {
   // console.log(totalResults) // 196 출력
   const pageGroup = Math.ceil(page / groupSize)
   let lastPage = pageGroup * groupSize;
+  //console.log(lastPage, totalPages) 
   if(lastPage > totalPages) {
     lastPage = totalPages;
   }
   const firstPage = lastPage - (groupSize - 1) <= 0? 1 : lastPage - (groupSize - 1);
 
   let pagiNationHTML = ``;
-  if(1 < page){
+  if (1 < page) {
     pagiNationHTML +=
-      `<li class="page-item" onclick="moveToPage(${firstPage})">
+      `<li class="page-item" onclick="moveToPage(1)">
         <a class="page-link">
           <i class="xi-angle-left-min"></i>
           <i class="xi-angle-left-min"></i>
@@ -172,18 +173,19 @@ const paginationRender = () => {
           <i class="xi-angle-left-min"></i>
         </a>
       </li>`
+
   }
   for(let i = firstPage; i <= lastPage; i++) {
     pagiNationHTML += `<li class="page-item ${i===page?'active':''}"} onclick="moveToPage(${i})"><a class="page-link">${i}</a></li>`
   }
-  if (page < lastPage) {
+  if (page < totalPages) {
     pagiNationHTML +=
-      `<li class="page-item" onclick="moveToPage(${page-1})">
+      `<li class="page-item" onclick="moveToPage(${page+1})">
         <a class="page-link">
           <i class="xi-angle-right-min"></i>
           </a>
           </li>
-          <li class="page-item" onclick="moveToPage(${lastPage})">
+          <li class="page-item" onclick="moveToPage(${totalPages})">
           <a class="page-link">
           <i class="xi-angle-right-min"></i>
           <i class="xi-angle-right-min"></i>
