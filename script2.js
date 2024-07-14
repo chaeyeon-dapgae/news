@@ -188,7 +188,7 @@ const paginationRender = () => {
   }
   if (page < lastPage) {
     pagiNationHTML +=
-      `<li class="page-item" onclick="moveToPage(${page-1})">
+      `<li class="page-item" onclick="moveToPage(${page+1})">
         <a class="page-link">
           <i class="xi-angle-right-min"></i>
           </a>

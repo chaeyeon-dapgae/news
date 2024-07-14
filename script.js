@@ -3,7 +3,8 @@ let newsList = [];
 
 let totalResults = 0;
 let page = 1;
-const pageSize = 10;
+// const pageSize = 10;
+const pageSize = 5;
 const groupSize = 5;
 
 // #################### menu ####################
@@ -61,7 +62,7 @@ inputTxt.addEventListener("keyup", (enterKeyCode) => {
 const getNews = async() => {
   try{
     url.searchParams.set("page", page)
-    // url.searchParams.set("pageSize", pageSize)
+    url.searchParams.set("pageSize", pageSize)
 
     const response = await fetch(url);
     const data = await response.json()
@@ -160,9 +161,7 @@ const paginationRender = () => {
   const firstPage = lastPage - (groupSize - 1) <= 0? 1 : lastPage - (groupSize - 1);
   let pagiNationHTML = ``;
   
-  if(lastPage == totalPages) {
-    pagiNationHTML = ``;
-  } else if (1 < page) {
+  if (1 < page) {
     pagiNationHTML +=
       `<li class="page-item" onclick="moveToPage(1)">
         <a class="page-link">
@@ -179,9 +178,7 @@ const paginationRender = () => {
   for(let i = firstPage; i <= lastPage; i++) {
     pagiNationHTML += `<li class="page-item ${i===page?'active':''}"} onclick="moveToPage(${i})"><a class="page-link">${i}</a></li>`
   }
-  if(lastPage == totalPages) {
-    pagiNationHTML += ``;
-  } else if (page < totalPages) {
+  if (page < totalPages) {
     pagiNationHTML +=
       `<li class="page-item" onclick="moveToPage(${page+1})">
         <a class="page-link">
